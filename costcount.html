@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+
+  <!-- 180207: Det här är en webapp som jag skrev ihop till Mattias Olsson på Svenska Stenhus
+  då han ville ha det till någon presentation.-->
+
+
+  <div ng-app="myApp" ng-controller="myCtrl" style="text-align: center">
+    <h1>{{tot | number:0}} kr</h1>
+    <h3>{{time | number:0}} sekunder</h3>
+    Antal personer: <input ng-model="employees">
+    <br/>
+    Timkostnad/person: <input ng-model="costPerHour">
+    <br/>
+    <button data-ng-click="reset()">Nolla</button>
+    <button data-ng-click="startpause()">Starta/pausa</button>
+  </div>
+
+  <script>
+      var app = angular.module('myApp', []);
+      app.controller('myCtrl', function($scope, $interval) {
+          var timeout;
+          $scope.employees = 1;
+          $scope.costPerHour = 1;
+
+          $scope.reset = function() {
+              $scope.tot = 0;
+              $scope.time = 0;
+          };
+
+          $scope.startpause = function() {
+              if (timeout == null) {
+                  timeout = $interval(timer, 10);
+              } else {
+                  $interval.cancel(timeout);
+                  timeout = null;
+              }
+          };
+
+          var timer = function() {
+              $scope.tot += $scope.employees * $scope.costPerHour * 0.01 / 60 / 60;
+              $scope.time += 0.01;
+          };
+
+          $scope.reset();
+          $scope.startpause();
+      });
+  </script>
+
+</body>
+</html>
+
